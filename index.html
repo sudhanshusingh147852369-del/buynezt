@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Buynezt compares quick-commerce prices, delivery times and offers." />
+  <title>Buynezt | Premium Quick-Commerce</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+    :root {
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --cream: #f8fafc;
+      --white: #ffffff;
+      --green: #10b981;
+      --green-dark: #059669;
+      --mint: #d1fae5;
+      --lime: #d9f99d;
+      --red: #ef4444;
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12);
+      --radius: 20px;
+      --glass-bg: rgba(255, 255, 255, 0.88);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: radial-gradient(circle at 10% 10%, rgba(217, 249, 157, 0.4), transparent 30rem),
+                  radial-gradient(circle at 90% 30%, rgba(209, 250, 229, 0.6), transparent 30rem),
+                  var(--cream);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.4s ease;
+    }
+
+    /* 🚨 SOS Theme */
+    body.sos-active {
+      background: radial-gradient(circle at 50% 0%, rgba(239, 68, 68, 0.15), transparent 40rem), #fef2f2;
+    }
+    body.sos-active .topbar-wrapper { border-color: rgba(239, 68, 68, 0.2); }
+    body.sos-active .hero {
+      background: linear-gradient(135deg, #b91c1c, #ef4444), url("https://images.unsplash.com/photo-1583324113626-70df0f4deaab?auto=format&fit=crop&w=1600&q=80") center/cover;
+    }
+
+    button, input, select { font: inherit; outline: none; }
+    button { cursor: pointer; border: 0; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+    button:active { transform: scale(0.95); }
+
+    /* Sticky Glass Topbar */
+    .topbar-wrapper {
+      position: sticky; top: 0; z-index: 50; padding: 18px 0;
+      background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,0,0,0.06); margin-bottom: 28px;
+    }
+    
+    .topbar { display: flex; align-items: center; justify-content: space-between; max-width: 1440px; margin: auto; padding: 0 34px; gap: 16px; }
+    
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 200px; }
+    .brand-mark {
+      background: var(--ink); color: var(--lime); width: 44px; height: 44px;
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      font-family: "Space Grotesk", sans-serif; font-size: 22px; font-weight: 700;
+      transform: rotate(-6deg); box-shadow: var(--shadow-sm); transition: 0.3s;
+    }
+    body.sos-active .brand-mark { background: var(--red); color: white; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+    .brand-name { font-family: "Space Grotesk", sans-serif; font-size: 24px; font-weight: 700; letter-spacing: -1px; }
+    .brand-name span { color: var(--green); }
+    body.sos-active .brand-name span { color: var(--red); }
+
+    .location-button {
+      display: flex; align-items: center; gap: 10px; background: white;
+      border: 1px solid var(--line); border-radius: 16px; padding: 10px 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: 0.3s; margin-right: auto;
+    }
+    .location-button:hover { border-color: var(--green); box-shadow: var(--shadow-sm); }
+    .location-button small { color: var(--muted); display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .location-button strong { display: block; font-size: 14px; color: var(--ink); margin-top: 2px; }
+
+    .top-actions { display: flex; gap: 12px; align-items: center; }
+    
+    .sos-btn {
+      background: #fef2f2; border: 1.5px solid var(--red); color: var(--red);
+      font-weight: 700; border-radius: 16px; padding: 0 16px; height: 46px; 
+      display: flex; align-items: center; gap: 8px; font-size: 14px;
+      animation: pulseRed 2s infinite; transition: 0.3s;
+    }
+    .sos-btn.active { background: var(--red); color: white; animation: none; box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3); }
+    @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+    .cart-btn {
+      background: var(--ink); color: white; border-radius: 16px; height: 46px; padding: 0 18px;
+      display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.2); transition: 0.3s;
+    }
+    .cart-btn:hover { background: #1e293b; transform: translateY(-2px); }
+    .cart-count { background: var(--lime); color: var(--ink); font-size: 12px; padding: 2px 8px; border-radius: 10px; }
+
+    .app-shell { max-width: 1440px; margin: auto; padding: 0 34px 50px; }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #064e3b, #047857), url("https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1600&q=80") center/cover;
+      border-radius: 32px; color: white; display: grid; gap: 40px; grid-template-columns: 1fr 400px;
+      align-items: center; min-height: 320px; overflow: hidden; padding: 50px 60px; position: relative;
+      box-shadow: var(--shadow-lg); transition: all 0.5s ease;
+    }
+    
+    .hero::after {
+      content: ""; position: absolute; right: -40px; top: -60px; width: 280px; height: 280px;
+      border-radius: 50%; background: transparent;
+      border: 20px solid rgba(217, 249, 157, 0.1);
+      box-shadow: inset 0 0 0 40px rgba(217, 249, 157, 0.05);
+      animation: pulseRing 6s infinite alternate cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none;
+    }
+    @keyframes pulseRing { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
+
+    .hero-copy { position: relative; z-index: 1; max-width: 600px; }
+    .eyebrow { color: var(--lime); font-size: 13px; font-weight: 700; letter-spacing: 2px; margin-bottom: 16px; text-transform: uppercase; }
+    h1 { font-family: "Space Grotesk", sans-serif; font-size: clamp(36px, 5vw, 68px); letter-spacing: -2px; line-height: 1.05; margin-bottom: 20px; text-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+    .hero-copy p { color: #e2e8f0; font-size: 17px; line-height: 1.6; }
+
+    .search-panel { background: rgba(255,255,255,0.98); border-radius: 20px; box-shadow: var(--shadow-md); padding: 10px; position: relative; z-index: 1; transition: 0.3s; }
+    .search-panel:focus-within { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .search-box { display: flex; align-items: center; gap: 12px; padding: 6px 12px; }
+    .search-box span { font-size: 24px; color: var(--muted); }
+    .search-box input { border: 0; color: var(--ink); flex: 1; font-size: 16px; background: transparent; padding: 12px 0; }
+    
+    .voice-button { background: var(--cream); border-radius: 50%; color: var(--ink); font-size: 18px; height: 42px; width: 42px; display: flex; align-items: center; justify-content: center; }
+    .voice-button:hover { background: var(--line); }
+    .voice-button.listening { background: var(--red); color: white; animation: pulseRed 1s infinite; }
+    
+    .search-button { background: var(--lime); color: var(--ink); font-weight: 700; font-size: 15px; border-radius: 12px; padding: 14px 24px; }
+    .search-button:hover { background: #bef264; }
+    .suggestions { color: var(--muted); font-size: 12px; padding: 12px 16px 4px; font-weight: 500; }
+
+    /* Category Navigation */
+    .category-row { display: flex; gap: 14px; margin: 36px 0 10px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
+    .category-row::-webkit-scrollbar { display: none; }
+    .category {
+      background: white; border: 1px solid var(--line); border-radius: 100px;
+      color: var(--ink); display: flex; align-items: center; font-size: 14px; font-weight: 600; gap: 8px; padding: 12px 20px;
+      white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .category:hover { transform: translateY(-3px); box-shadow: var(--shadow-sm); border-color: var(--green); }
+    .category.active { background: var(--ink); color: white; border-color: var(--ink); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25); }
+    body.sos-active .category.active { background: var(--red); border-color: var(--red); box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3); }
+
+    .section-heading { display: flex; justify-content: space-between; align-items: flex-end; margin: 24px 0 20px; }
+    .section-heading h2 { font-family: "Space Grotesk", sans-serif; font-size: 28px; letter-spacing: -1px; color: var(--ink); }
+    body.sos-active .section-heading h2 { color: var(--red); }
+    .section-heading p { color: var(--muted); font-size: 14px; margin-top: 6px; font-weight: 500; }
+    .sort-select { background: white; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); font-weight: 600; padding: 12px 16px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+
+    .product-grid { display: grid; gap: 24px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes shimmer { 0% { background-position: -200px 0; } 100% { background-position: 200px 0; } }
+
+    .product-card {
+      animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+      background: white; border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius);
+      overflow: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03); transform-style: preserve-3d;
+    }
+    .product-card:hover { border-color: rgba(16, 185, 129, 0.3); box-shadow: 0 20px 40px rgba(16, 185, 129, 0.08); transform: translateY(-6px); }
+    body.sos-active .product-card:hover { border-color: var(--red); box-shadow: 0 20px 40px rgba(239, 68, 68, 0.15); }
+
+    .product-image { background: #f8fafc; height: 180px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; transition: 0.4s; }
+    .product-card:hover .product-image { background: #f1f5f9; }
+    body.sos-active .product-image { background: #fef2f2; }
+    
+    .product-photo { height: 140px; width: auto; object-fit: contain; z-index: 1; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    .product-card:hover .product-photo { transform: scale(1.1) rotate(-2deg); }
+    
+    .deal-label { 
+      background: linear-gradient(90deg, #ef4444 0%, #fca5a5 50%, #ef4444 100%);
+      background-size: 200% 100%; animation: shimmer 3s infinite linear;
+      color: white; font-size: 10px; font-weight: 800; padding: 6px 10px;
+      border-radius: 8px; position: absolute; top: 14px; left: 14px; z-index: 2; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+    }
+
+    .product-info { padding: 20px; }
+    .product-info h3 { font-size: 16px; font-weight: 700; line-height: 1.3; color: var(--ink); margin-bottom: 6px; }
+    .product-meta { color: var(--muted); font-size: 13px; font-weight: 500; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+    .rating { background: #fffbeb; color: #d97706; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 12px; }
+
+    .compare-list { border-top: 1px dashed var(--line); margin: 0 -20px; padding: 12px 20px 0; }
+    .compare-row { display: grid; grid-template-columns: 80px 1fr auto; align-items: center; gap: 12px; padding: 8px; margin: 0 -8px; border-radius: 10px; transition: 0.2s; }
+    .compare-row:hover { background: var(--cream); }
+    
+    .store-logo img { height: 24px; width: auto; max-width: 60px; object-fit: contain; }
+    .delivery { color: var(--muted); font-size: 11px; font-weight: 600; }
+    .price { font-size: 14px; font-weight: 700; text-align: right; color: var(--ink); }
+    
+    .best-price { color: var(--green-dark); background: var(--mint); padding: 4px 8px; border-radius: 8px; }
+    body.sos-active .best-price { color: #b91c1c; background: #fee2e2; }
+
+    .add-button {
+      background: var(--ink); color: white; width: 100%; border-radius: 14px;
+      padding: 14px; font-size: 14px; font-weight: 700; margin-top: 16px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15); transition: 0.3s;
+    }
+    .add-button:hover { background: var(--green); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25); transform: translateY(-2px); }
+    body.sos-active .add-button { background: var(--red); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
+    body.sos-active .add-button:hover { background: #dc2626; box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3); }
+
+    .empty-state { display: none; grid-column: 1 / -1; background: white; border: 1px dashed var(--muted); border-radius: 24px; padding: 60px; text-align: center; color: var(--muted); }
+
+    .drawer-backdrop { background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); inset: 0; opacity: 0; pointer-events: none; position: fixed; transition: 0.4s ease; z-index: 100; }
+    .drawer-backdrop.open { opacity: 1; pointer-events: auto; }
+    
+    .cart-drawer {
+      background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-left: 1px solid rgba(255,255,255,0.6);
+      width: 100%; max-width: 440px; position: fixed; right: 0; top: 0; bottom: 0;
+      transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 101;
+      display: flex; flex-direction: column; box-shadow: -20px 0 60px rgba(0,0,0,0.1);
+      height: 100vh; height: 100dvh; overflow: hidden;
+    }
+    .cart-drawer.open { transform: translateX(0); }
+    
+    .drawer-header { padding: 20px 24px 14px; border-bottom: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+    .drawer-header h2 { font-family: "Space Grotesk", sans-serif; font-size: 20px; }
+    .close-button { background: white; color: var(--ink); border: 1px solid var(--line); width: 36px; height: 36px; border-radius: 50%; font-size: 18px; box-shadow: var(--shadow-sm); transition: 0.2s; }
+    .close-button:hover { background: var(--red); color: white; border-color: var(--red); transform: rotate(90deg); }
+    
+    .drawer-scroll-body {
+      flex: 1; overflow-y: auto; padding: 20px 24px; min-height: 0;
+      scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.2) transparent;
+    }
+    .drawer-scroll-body::-webkit-scrollbar { width: 6px; }
+    .drawer-scroll-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
+
+    /* 🤖 ULTRA-COMPACT AI OPTIMIZER PANEL */
+    .ai-optimizer-panel {
+      background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 16px;
+      padding: 14px 16px; margin-bottom: 16px; color: white; box-shadow: 0 6px 20px rgba(15, 23, 42, 0.2);
+    }
+    .ai-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .ai-title { display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 13px; }
+    .ai-tag { background: rgba(217, 249, 157, 0.2); color: var(--lime); padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    .ai-platform-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 10px 0; }
+    .ai-platform-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 8px 10px; }
+    .ai-platform-card.winner { border-color: var(--lime); background: rgba(217, 249, 157, 0.1); }
+    .ai-platform-name { font-size: 11px; font-weight: 600; opacity: 0.8; margin-bottom: 2px; display: flex; justify-content: space-between; }
+    .ai-platform-price { font-size: 14px; font-weight: 800; color: white; }
+    .ai-platform-card.winner .ai-platform-price { color: var(--lime); }
+    
+    .ai-verdict-box { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 10px; margin-top: 10px; font-size: 11px; line-height: 1.3; }
+    .ai-action-btn { background: var(--lime); color: var(--ink); border-radius: 10px; padding: 10px; font-weight: 800; font-size: 12px; width: 100%; margin-top: 10px; box-shadow: 0 4px 10px rgba(217, 249, 157, 0.15); transition: 0.2s; }
+    .ai-action-btn:hover { background: #bef264; transform: translateY(-2px); }
+
+    .ai-success-panel { background: var(--mint); color: var(--green-dark); border-radius: 14px; padding: 12px 16px; margin-bottom: 16px; font-weight: 600; font-size: 12px; border: 1px solid #6ee7b7; display: flex; align-items: center; gap: 8px; }
+
+    /* 👥 COMPACT SPLITTER */
+    .hostel-split-box {
+      background: white; border: 1px solid var(--line); border-radius: 16px;
+      padding: 14px 16px; margin-bottom: 16px; box-shadow: var(--shadow-sm);
+    }
+    .split-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .split-header strong { font-size: 13px; color: var(--ink); display: flex; align-items: center; gap: 6px; }
+    .flatmate-counter { display: flex; align-items: center; gap: 10px; background: var(--cream); padding: 4px; border-radius: 10px; }
+    .counter-btn { background: white; border: 1px solid var(--line); width: 26px; height: 26px; border-radius: 6px; font-weight: bold; font-size:12px; }
+    .split-summary { font-size: 18px; font-weight: 700; color: var(--green-dark); margin-bottom: 4px; }
+    
+    .share-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .share-btn { flex: 1; padding: 10px; border-radius: 10px; font-size: 12px; font-weight: 700; text-align: center; display: flex; justify-content: center; gap: 6px; text-decoration: none; }
+    .share-whatsapp { background: #25d366; color: white; }
+    .share-link { background: var(--cream); color: var(--ink); border: 1px solid var(--line); }
+
+    .cart-items-container { margin-bottom: 10px; }
+    .cart-item { background: white; border-radius: 14px; border: 1px solid var(--line); display: flex; gap: 12px; padding: 10px 12px; margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: 0.2s; }
+    .cart-item:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.05); }
+    
+    .cart-item-img { background: var(--cream); border-radius: 10px; height: 44px; width: 44px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+    .cart-item-img img { width: 34px; height: 34px; object-fit: contain; }
+
+    .cart-item-info { flex: 1; }
+    .cart-item-info strong { font-size: 13px; color: var(--ink); display: block; margin-bottom: 4px; }
+    .cart-item-info small { background: var(--cream); color: var(--muted); padding: 3px 6px; border-radius: 6px; font-size: 10px; font-weight: 700; }
+    .cart-del-btn { background: #fef2f2; color: var(--red); width: 30px; height: 30px; border-radius: 8px; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    .drawer-footer { padding: 16px 24px 24px; background: white; border-top: 1px solid rgba(0,0,0,0.05); flex-shrink: 0; box-shadow: 0 -10px 20px rgba(0,0,0,0.02); }
+    .total-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-bottom: 8px; font-weight: 500; }
+    .total-row.final { font-size: 20px; font-weight: 700; color: var(--ink); margin: 12px 0 16px; padding-top: 12px; border-top: 1px dashed var(--line); }
+    .checkout-button { background: var(--green); color: white; width: 100%; border-radius: 14px; padding: 16px; font-size: 15px; font-weight: 700; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25); transition: 0.2s; }
+    .checkout-button:hover { background: var(--green-dark); transform: translateY(-2px); }
+
+    .checkout-modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(6px); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.3s; }
+    .checkout-modal-overlay.show { opacity: 1; pointer-events: auto; }
+    .checkout-modal-content { background: white; border-radius: 24px; padding: 24px; width: 90%; max-width: 360px; box-shadow: 0 24px 48px rgba(0,0,0,0.2); transform: translateY(20px) scale(0.95); transition: 0.3s; }
+    .checkout-modal-overlay.show .checkout-modal-content { transform: translateY(0) scale(1); }
+    .checkout-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .checkout-modal-header h3 { font-family: 'Space Grotesk', sans-serif; font-size: 20px; color: var(--ink); }
+    .store-checkout-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: white; font-weight: 700; font-size: 14px; color: var(--ink); transition: 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+    .store-checkout-btn:hover { border-color: var(--green); box-shadow: var(--shadow-sm); transform: translateY(-2px); }
+    .store-checkout-btn img { height: 20px; max-width: 60px; object-fit: contain; }
+    .store-checkout-meta { display: flex; align-items: center; gap: 10px; }
+    .store-checkout-badge { background: var(--cream); color: var(--muted); padding: 4px 8px; border-radius: 8px; font-size: 10px; }
+
+    .toast { background: var(--ink); color: white; padding: 14px 20px; border-radius: 100px; font-weight: 600; font-size: 13px; position: fixed; bottom: 30px; left: 50%; transform: translate(-50%, 40px); opacity: 0; pointer-events: none; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 300; box-shadow: var(--shadow-lg); white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 1000px) { .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } .hero { grid-template-columns: 1fr; padding: 40px; } }
+    @media (max-width: 700px) {
+      .app-shell { padding: 0 16px 30px; } .topbar { padding: 0 16px; flex-wrap: wrap; } .location-button { width: 100%; order: 3; }
+      .hero { padding: 30px 20px; border-radius: 24px; } h1 { font-size: 32px; }
+      .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .cart-drawer { max-width: 100%; border-radius: 0; }
+    }
+    @media (max-width: 390px) { .product-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+
+<body>
+  <div class="topbar-wrapper">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">B</div>
+        <div class="brand-name">Buy<span>nezt</span></div>
+      </div>
+      <button class="location-button" id="locationButton">
+        <span>⌖</span>
+        <span>
+          <small>Delivering to</small>
+          <strong id="locationText">Bengaluru, 560001</strong>
+        </span>
+        <span>⌄</span>
+      </button>
+      <div class="top-actions">
+        <button class="sos-btn" id="sosToggle" aria-label="SOS Emergency Mode">
+          <span style="font-size:16px">🚨</span> SOS
+        </button>
+        <button class="cart-btn" id="cartButton" aria-label="Open cart">
+          🛒<span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
+    </header>
+  </div>
+
+  <div class="app-shell">
+    <main>
+      <section class="hero" id="heroSection">
+        <div class="hero-copy">
+          <div class="eyebrow" id="heroEyebrow">One search. Every quick-commerce app.</div>
+          <h1 id="heroTitle">Spend less.<br />Choose smarter.</h1>
+          <p id="heroDesc">Compare live-style prices, delivery times and offers across your favourite shopping apps before you place an order.</p>
+        </div>
+        <div class="search-panel">
+          <div class="search-box">
+            <span>⌕</span>
+            <input id="searchInput" type="search" placeholder="Search chai, atta, crocin, snacks..." autocomplete="off" />
+            <button class="voice-button" id="voiceButton" aria-label="Voice Search" title="Voice Search">🎤</button>
+            <button class="search-button" id="searchButton">Search</button>
+          </div>
+          <div class="suggestions">Popular: wagh bakri chai · saridon · atta · maggi · volini</div>
+        </div>
+      </section>
+
+      <nav class="category-row" id="categoryRow" aria-label="Product categories">
+        <button class="category active" data-category="All">✦ All products</button>
+        <button class="category" data-category="Emergency" style="color:var(--red); font-weight:700; border-color:#fca5a5; background:#fef2f2;">🚨 SOS Kits</button>
+        <button class="category" data-category="Pharmacy">💊 Pharmacy</button>
+        <button class="category" data-category="Grocery">🌾 Grocery</button>
+        <button class="category" data-category="Dairy">🥛 Dairy</button>
+        <button class="category" data-category="Snacks">🍿 Snacks</button>
+        <button class="category" data-category="Drinks">🥤 Drinks</button>
+        <button class="category" data-category="Fruits">🍎 Fruits</button>
+        <button class="category" data-category="Household">🧼 Household</button>
+      </nav>
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <h2 id="gridTitle">Compare and save</h2>
+            <p id="resultText">Showing popular products near you</p>
+          </div>
+          <select class="sort-select" id="sortSelect">
+            <option value="recommended">Recommended</option>
+            <option value="price">Lowest price</option>
+            <option value="delivery">Fastest delivery</option>
+            <option value="discount">Biggest discount</option>
+          </select>
+        </div>
+        
+        <div class="product-grid" id="productGrid"></div>
+        
+        <div class="empty-state" id="emptyState">
+          <div style="font-size: 50px; margin-bottom: 12px;">🔍</div>
+          <strong style="font-size: 18px; color: var(--ink);">No products found</strong>
+          <p style="margin-top: 6px; font-size:14px;">Try searching for another product or category.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+  <!-- Cart Drawer -->
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart">
+    <div class="drawer-header">
+      <div>
+        <h2>Your Cart</h2>
+        <p style="color: var(--muted); font-size: 12px; margin-top: 2px; font-weight:500;">Live Cart Optimizer Active</p>
+      </div>
+      <button class="close-button" id="closeCart">×</button>
+    </div>
+
+    <div class="drawer-scroll-body">
+      
+      <!-- 🤖 COMPACT AI CART OPTIMIZER -->
+      <div class="ai-optimizer-panel" id="aiOptimizerPanel">
+        <div class="ai-header">
+          <div class="ai-title">🤖 AI Optimizer</div>
+          <span class="ai-tag" id="aiStatusTag">Analyzing</span>
+        </div>
+        <div id="aiOptimizerContent"></div>
+      </div>
+
+      <!-- 👥 COMPACT ROOMMATE SPLITTER -->
+      <div class="hostel-split-box" id="hostelSplitBox" style="display: none;">
+        <div class="split-header">
+          <strong>👥 Roommate Splitter</strong>
+          <div class="flatmate-counter">
+            <button class="counter-btn" onclick="adjustFlatmates(-1)">-</button>
+            <span id="flatmateCountText" style="font-weight:700;">3</span>
+            <button class="counter-btn" onclick="adjustFlatmates(1)">+</button>
+          </div>
+        </div>
+        <div class="split-summary" id="splitSummaryText">₹0 per person</div>
+        <p style="color: var(--muted); font-size: 11px; margin-bottom: 4px;">Includes all delivery fees.</p>
+        <div class="share-actions">
+          <a class="share-btn share-whatsapp" id="whatsappShareBtn" target="_blank">📲 Send Bill</a>
+          <button class="share-btn share-link" onclick="copyCartLink()">🔗 Share Cart</button>
+        </div>
+      </div>
+
+      <!-- Cart Items List -->
+      <div class="cart-items-container" id="cartItems">
+        <p style="color: var(--muted); text-align: center; padding: 30px 0; font-size:13px;">Your cart is empty.<br><br>Add products to calculate savings!</p>
+      </div>
+    </div>
+
+    <!-- Drawer Footer -->
+    <div class="drawer-footer">
+      <div class="total-row">
+        <span>Cart Items</span>
+        <strong id="subtotal">₹0</strong>
+      </div>
+      <div class="total-row" style="color:var(--muted);">
+        <span>Delivery Fees (₹35/app)</span>
+        <strong id="fees">₹0</strong>
+      </div>
+      <div class="total-row final">
+        <span>Final Total</span>
+        <strong id="total">₹0</strong>
+      </div>
+      <button class="checkout-button" id="checkoutButton">Continue to Apps →</button>
+    </div>
+  </aside>
+
+  <!-- Checkout Modal -->
+  <div class="checkout-modal-overlay" id="checkoutModal">
+    <div class="checkout-modal-content">
+      <div class="checkout-modal-header">
+        <h3>Open Apps</h3>
+        <button class="close-button" id="closeCheckoutModal">×</button>
+      </div>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.5;">
+        You have selected items from multiple platforms. Which app would you like to open first?
+      </p>
+      <div id="checkoutModalButtons" style="display: flex; flex-direction: column; gap: 10px;"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const flatDeliveryFee = 35;
+    let flatmateCount = 3;
+
+    const storeLogos = {
+      Zepto: "images/platforms/zepto.png", Blinkit: "images/platforms/blinkit.png",
+      Instamart: "images/platforms/instamart.png", Flipkart: "images/platforms/flipkart.png"
+    };
+
+    const storeSearchUrl = (store, queries) => {
+      const mainQuery = encodeURIComponent(queries[0]);
+      switch (store) {
+        case "Zepto": return `https://www.zeptonow.com/search?query=${mainQuery}`;
+        case "Blinkit": return `https://blinkit.com/s/?q=${mainQuery}`;
+        case "Instamart": return `https://www.swiggy.com/instamart/search?custom_back=true&query=${mainQuery}`;
+        case "Flipkart": return `https://www.flipkart.com/search?q=${mainQuery}`;
+        default: return null;
+      }
+    };
+
+    function generateBalancedOptions(basePrice, baseTime, winnerIndex) {
+      const stores = ["Zepto", "Blinkit", "Instamart", "Flipkart"];
+      const options = [];
+      for(let i=0; i<4; i++) {
+        if(i === winnerIndex) {
+          options.push({ store: stores[i], price: basePrice, time: baseTime });
+        } else {
+          const priceBump = Math.floor(Math.random() * 14) + 2; 
+          const timeBump = Math.floor(Math.random() * 7) + 2;
+          options.push({ store: stores[i], price: basePrice + priceBump, time: baseTime + timeBump });
+        }
+      }
+      return options;
+    }
+
+    const products = [
+      { id: 201, name: "Fever First-Response Kit", quantity: "Dolo 650 + ORS + Thermometer", category: "Emergency", image: "images/fever-kit.png", emoji: "🚑", rating: 5.0, discount: 0, options: generateBalancedOptions(280, 8, 0) },
+      { id: 202, name: "Wound Care Kit", quantity: "Bandages + Dettol + Cotton", category: "Emergency", image: "images/wound-kit.png", emoji: "🩹", rating: 4.9, discount: 0, options: generateBalancedOptions(140, 7, 1) },
+      { id: 203, name: "Stomach Relief Kit", quantity: "Eno + Pudin Hara + ORS", category: "Emergency", image: "images/stomach-kit.png", emoji: "🤢", rating: 4.8, discount: 0, options: generateBalancedOptions(170, 8, 2) },
+      { id: 204, name: "Burn Relief Kit", quantity: "Burnol + Cotton Pads", category: "Emergency", image: "images/burn-kit.png", emoji: "🔥", rating: 4.9, discount: 0, options: generateBalancedOptions(120, 7, 3) },
+      { id: 205, name: "Breathing Aid Canister", quantity: "Oxy99 Portable Oxygen", category: "Emergency", image: "images/oxygen.png", emoji: "💨", rating: 4.8, discount: 0, options: generateBalancedOptions(650, 9, 0) },
+      { id: 206, name: "Severe Pain Relief", quantity: "Volini Spray + Crepe Bandage", category: "Emergency", image: "images/pain-kit.png", emoji: "⚡", rating: 4.7, discount: 0, options: generateBalancedOptions(220, 8, 1) },
+      { id: 207, name: "Women's Emergency Kit", quantity: "Whisper Pads + Cramp Roll-on", category: "Emergency", image: "images/womens-kit.png", emoji: "🩸", rating: 4.9, discount: 0, options: generateBalancedOptions(195, 7, 2) },
+      { id: 208, name: "Instant Sugar Drop Kit", quantity: "Glucon-D + Chocolates", category: "Emergency", image: "images/sugar-kit.png", emoji: "🍬", rating: 4.8, discount: 0, options: generateBalancedOptions(110, 6, 3) },
+      { id: 209, name: "Dehydration Kit", quantity: "3x ORS + 2x Coconut Water", category: "Emergency", image: "images/dehydration-kit.png", emoji: "💧", rating: 4.9, discount: 0, options: generateBalancedOptions(165, 8, 0) },
+
+      { id: 101, name: "Dolo 650 Tablet (15 Tab)", quantity: "1 Strip", category: "Pharmacy", image: "images/dolo.png", emoji: "💊", rating: 4.9, discount: 5, options: generateBalancedOptions(29, 10, 3) },
+      { id: 102, name: "Band-Aid Washproof", quantity: "Pack of 20", category: "Pharmacy", image: "images/bandaid.png", emoji: "🩹", rating: 4.8, discount: 10, options: generateBalancedOptions(39, 10, 0) },
+      { id: 103, name: "Eno Lemon (Pack of 6)", quantity: "30 g", category: "Pharmacy", image: "images/eno.png", emoji: "🍋", rating: 4.7, discount: 8, options: generateBalancedOptions(50, 11, 1) },
+      { id: 104, name: "Vicks VapoRub", quantity: "25 g", category: "Pharmacy", image: "images/vicks.png", emoji: "🌬️", rating: 4.6, discount: 6, options: generateBalancedOptions(78, 10, 2) },
+      { id: 105, name: "ORS Electral Powder", quantity: "21.8 g (5 Sachets)", category: "Pharmacy", image: "images/ors.png", emoji: "💧", rating: 4.9, discount: 5, options: generateBalancedOptions(95, 12, 3) },
+      { id: 106, name: "Saridon Headache Relief", quantity: "10 Tablets", category: "Pharmacy", image: "images/saridon.png", emoji: "🤕", rating: 4.8, discount: 5, options: generateBalancedOptions(55, 9, 0) },
+      { id: 107, name: "Volini Pain Relief Spray", quantity: "40 g", category: "Pharmacy", image: "images/volini.png", emoji: "🦵", rating: 4.7, discount: 12, options: generateBalancedOptions(145, 11, 1) },
+      { id: 108, name: "Digene Antacid Gel", quantity: "200 ml", category: "Pharmacy", image: "images/digene.png", emoji: "🧪", rating: 4.6, discount: 10, options: generateBalancedOptions(175, 13, 2) },
+      { id: 109, name: "Moov Pain Relief Cream", quantity: "50 g", category: "Pharmacy", image: "images/moov.png", emoji: "🏃", rating: 4.8, discount: 15, options: generateBalancedOptions(195, 14, 3) },
+      { id: 110, name: "Pudin Hara Pearls", quantity: "20 Pearls", category: "Pharmacy", image: "images/pudin-hara.png", emoji: "🌿", rating: 4.9, discount: 8, options: generateBalancedOptions(65, 10, 0) },
+      { id: 111, name: "Otrivin Nasal Spray", quantity: "10 ml", category: "Pharmacy", image: "images/otrivin.png", emoji: "👃", rating: 4.7, discount: 10, options: generateBalancedOptions(115, 11, 1) },
+      { id: 112, name: "Soframycin Skin Cream", quantity: "30 g", category: "Pharmacy", image: "images/soframycin.png", emoji: "🩹", rating: 4.8, discount: 5, options: generateBalancedOptions(48, 12, 2) },
+      { id: 113, name: "Becosules Capsules", quantity: "20 Caps", category: "Pharmacy", image: "images/becosules.png", emoji: "💊", rating: 4.7, discount: 12, options: generateBalancedOptions(60, 10, 3) },
+      { id: 114, name: "Strepsils Lozenges", quantity: "8 pcs", category: "Pharmacy", image: "images/strepsils.png", emoji: "🍬", rating: 4.6, discount: 5, options: generateBalancedOptions(28, 9, 0) },
+      { id: 115, name: "Honitus Cough Syrup", quantity: "100 ml", category: "Pharmacy", image: "images/honitus.png", emoji: "🍯", rating: 4.8, discount: 15, options: generateBalancedOptions(105, 12, 1) },
+
+      { id: 41, name: "Wagh Bakri Premium Tea", quantity: "500 g", category: "Grocery", image: "images/wagh-bakri.png", emoji: "☕", rating: 4.8, discount: 12, options: generateBalancedOptions(265, 10, 2) },
+      { id: 42, name: "MDH Deggi Mirch", quantity: "100 g", category: "Grocery", image: "images/deggi-mirch.png", emoji: "🌶️", rating: 4.7, discount: 10, options: generateBalancedOptions(80, 11, 3) },
+      { id: 43, name: "Amul Pure Cow Ghee", quantity: "1 litre", category: "Dairy", image: "images/amul-ghee.png", emoji: "🧈", rating: 4.9, discount: 8, options: generateBalancedOptions(610, 12, 0) },
+      { id: 44, name: "Nescafe Classic Coffee", quantity: "50 g Jar", category: "Drinks", image: "images/nescafe.png", emoji: "☕", rating: 4.7, discount: 15, options: generateBalancedOptions(185, 10, 1) },
+      { id: 45, name: "Dabur Honey Squeezy", quantity: "400 g", category: "Grocery", image: "images/dabur-honey.png", emoji: "🍯", rating: 4.8, discount: 20, options: generateBalancedOptions(165, 11, 2) },
+      { id: 46, name: "All Out Refill (Twin)", quantity: "2 x 45 ml", category: "Household", image: "images/all-out.png", emoji: "🦟", rating: 4.7, discount: 18, options: generateBalancedOptions(149, 12, 3) },
+      { id: 47, name: "Colin Glass Cleaner", quantity: "500 ml", category: "Household", image: "images/colin.png", emoji: "🪟", rating: 4.6, discount: 12, options: generateBalancedOptions(99, 11, 0) },
+      { id: 48, name: "Dettol Handwash", quantity: "750 ml", category: "Household", image: "images/dettol-handwash.png", emoji: "🧼", rating: 4.9, discount: 25, options: generateBalancedOptions(109, 12, 1) },
+      { id: 49, name: "Haldiram's Gulab Jamun", quantity: "1 kg", category: "Snacks", image: "images/gulab-jamun.png", emoji: "🍬", rating: 4.8, discount: 14, options: generateBalancedOptions(225, 13, 2) },
+      { id: 50, name: "Tata Sampann Chana Dal", quantity: "1 kg", category: "Grocery", image: "images/chana-dal.png", emoji: "🫘", rating: 4.7, discount: 16, options: generateBalancedOptions(122, 11, 3) },
+
+      { id: 1, name: "Aashirvaad Wheat Atta", quantity: "5 kg", category: "Grocery", image: "images/atta.png", emoji: "🌾", rating: 4.8, discount: 18, options: generateBalancedOptions(285, 12, 0) },
+      { id: 2, name: "Amul Taaza Toned Milk", quantity: "1 litre", category: "Dairy", image: "images/milk.png", emoji: "🥛", rating: 4.7, discount: 10, options: generateBalancedOptions(66, 11, 1) },
+      { id: 3, name: "Coca-Cola Soft Drink", quantity: "750 ml", category: "Drinks", image: "images/cola.png", emoji: "🥤", rating: 4.6, discount: 25, options: generateBalancedOptions(40, 12, 2) },
+      { id: 4, name: "Lay's Magic Masala", quantity: "50 g", category: "Snacks", image: "images/chips.png", emoji: "🥔", rating: 4.5, discount: 12, options: generateBalancedOptions(19, 12, 3) },
+      { id: 5, name: "Fresh Banana Robusta", quantity: "6 pieces", category: "Fruits", image: "images/banana.png", emoji: "🍌", rating: 4.4, discount: 20, options: generateBalancedOptions(35, 13, 0) },
+      { id: 6, name: "Surf Excel Matic Liquid", quantity: "2 litre", category: "Household", image: "images/surf-excel.png", emoji: "🧺", rating: 4.8, discount: 31, options: generateBalancedOptions(218, 13, 1) },
+      { id: 7, name: "India Gate Basmati Rice", quantity: "5 kg", category: "Grocery", image: "images/rice.png", emoji: "🍚", rating: 4.6, discount: 22, options: generateBalancedOptions(445, 14, 2) },
+      { id: 8, name: "Kellogg's Corn Flakes", quantity: "300 g", category: "Grocery", image: "images/cornflakes.png", emoji: "🥣", rating: 4.5, discount: 16, options: generateBalancedOptions(152, 12, 3) },
+      { id: 9, name: "Fortune Sunflower Oil", quantity: "1 litre", category: "Grocery", image: "images/fortune-oil.png", emoji: "🫗", rating: 4.6, discount: 15, options: generateBalancedOptions(132, 11, 0) },
+      { id: 10, name: "Tata Salt", quantity: "1 kg", category: "Grocery", image: "images/tata-salt.png", emoji: "🧂", rating: 4.7, discount: 8, options: generateBalancedOptions(27, 10, 1) },
+      { id: 11, name: "Tata Sampann Toor Dal", quantity: "1 kg", category: "Grocery", image: "images/toor-dal.png", emoji: "🫘", rating: 4.6, discount: 18, options: generateBalancedOptions(158, 12, 2) },
+      { id: 12, name: "Sugar", quantity: "1 kg", category: "Grocery", image: "images/sugar.png", emoji: "🍬", rating: 4.5, discount: 5, options: generateBalancedOptions(46, 11, 3) },
+      { id: 13, name: "Maggi 2-Minute Noodles", quantity: "Pack of 12", category: "Grocery", image: "images/maggi.png", emoji: "🍜", rating: 4.8, discount: 14, options: generateBalancedOptions(160, 10, 0) },
+      { id: 14, name: "Everest Garam Masala", quantity: "100 g", category: "Grocery", image: "images/everest-masala.png", emoji: "🌶️", rating: 4.7, discount: 12, options: generateBalancedOptions(69, 11, 1) },
+      { id: 15, name: "Amul Butter", quantity: "100 g", category: "Dairy", image: "images/amul-butter.png", emoji: "🧈", rating: 4.8, discount: 8, options: generateBalancedOptions(56, 11, 2) },
+      { id: 16, name: "Amul Fresh Paneer", quantity: "200 g", category: "Dairy", image: "images/amul-paneer.png", emoji: "🧀", rating: 4.7, discount: 10, options: generateBalancedOptions(80, 12, 3) },
+      { id: 17, name: "Amul Masti Curd", quantity: "400 g", category: "Dairy", image: "images/amul-curd.png", emoji: "🥛", rating: 4.6, discount: 7, options: generateBalancedOptions(37, 11, 0) },
+      { id: 18, name: "Farm Fresh Eggs", quantity: "6 pieces", category: "Dairy", image: "images/eggs.png", emoji: "🥚", rating: 4.5, discount: 10, options: generateBalancedOptions(48, 10, 1) },
+      { id: 19, name: "Britannia Milk Bread", quantity: "400 g", category: "Dairy", image: "images/bread.png", emoji: "🍞", rating: 4.5, discount: 6, options: generateBalancedOptions(42, 11, 2) },
+      { id: 20, name: "Quaker Oats", quantity: "1 kg", category: "Grocery", image: "images/quaker-oats.png", emoji: "🥣", rating: 4.6, discount: 18, options: generateBalancedOptions(155, 17, 3) },
+      { id: 21, name: "Kurkure Masala Munch", quantity: "90 g", category: "Snacks", image: "images/kurkure.png", emoji: "🥨", rating: 4.5, discount: 10, options: generateBalancedOptions(34, 11, 0) },
+      { id: 22, name: "Parle-G Biscuits", quantity: "800 g", category: "Snacks", image: "images/parle-g.png", emoji: "🍪", rating: 4.6, discount: 9, options: generateBalancedOptions(75, 10, 1) },
+      { id: 23, name: "Britannia Good Day", quantity: "200 g", category: "Snacks", image: "images/good-day.png", emoji: "🍪", rating: 4.5, discount: 12, options: generateBalancedOptions(40, 11, 2) },
+      { id: 24, name: "Oreo Original", quantity: "120 g", category: "Snacks", image: "images/oreo.png", emoji: "🍪", rating: 4.7, discount: 15, options: generateBalancedOptions(34, 11, 3) },
+      { id: 25, name: "Haldiram's Bhujia", quantity: "200 g", category: "Snacks", image: "images/bhujia.png", emoji: "🥜", rating: 4.7, discount: 13, options: generateBalancedOptions(59, 11, 0) },
+      { id: 26, name: "Cadbury Dairy Milk", quantity: "110 g", category: "Snacks", image: "images/dairy-milk.png", emoji: "🍫", rating: 4.8, discount: 15, options: generateBalancedOptions(99, 10, 1) },
+      { id: 27, name: "Pepsi", quantity: "750 ml", category: "Drinks", image: "images/pepsi.png", emoji: "🥤", rating: 4.5, discount: 20, options: generateBalancedOptions(39, 11, 2) },
+      { id: 28, name: "Sprite", quantity: "750 ml", category: "Drinks", image: "images/sprite.png", emoji: "🥤", rating: 4.6, discount: 20, options: generateBalancedOptions(39, 11, 3) },
+      { id: 29, name: "Sting Energy Drink", quantity: "250 ml", category: "Drinks", image: "images/sting.png", emoji: "⚡", rating: 4.6, discount: 12, options: generateBalancedOptions(46, 11, 0) },
+      { id: 30, name: "Red Bull Energy Drink", quantity: "250 ml", category: "Drinks", image: "images/red-bull.png", emoji: "🥤", rating: 4.7, discount: 8, options: generateBalancedOptions(120, 11, 1) },
+      { id: 31, name: "Bisleri Mineral Water", quantity: "1 litre", category: "Drinks", image: "images/bisleri.png", emoji: "💧", rating: 4.6, discount: 5, options: generateBalancedOptions(19, 10, 2) },
+      { id: 32, name: "Fresh Red Apples", quantity: "4 pieces", category: "Fruits", image: "images/apple.png", emoji: "🍎", rating: 4.5, discount: 18, options: generateBalancedOptions(110, 13, 3) },
+      { id: 33, name: "Fresh Tomatoes", quantity: "1 kg", category: "Fruits", image: "images/tomato.png", emoji: "🍅", rating: 4.4, discount: 15, options: generateBalancedOptions(38, 13, 0) },
+      { id: 34, name: "Fresh Onions", quantity: "1 kg", category: "Fruits", image: "images/onion.png", emoji: "🧅", rating: 4.4, discount: 12, options: generateBalancedOptions(35, 13, 1) },
+      { id: 35, name: "Fresh Potatoes", quantity: "1 kg", category: "Fruits", image: "images/potato.png", emoji: "🥔", rating: 4.4, discount: 10, options: generateBalancedOptions(32, 13, 2) },
+      { id: 36, name: "Fresh Lemon", quantity: "250 g", category: "Fruits", image: "images/lemon.png", emoji: "🍋", rating: 4.4, discount: 15, options: generateBalancedOptions(28, 13, 3) },
+      { id: 37, name: "Vim Dishwash Liquid", quantity: "500 ml", category: "Household", image: "images/vim.png", emoji: "🧽", rating: 4.7, discount: 22, options: generateBalancedOptions(89, 12, 0) },
+      { id: 38, name: "Harpic Toilet Cleaner", quantity: "1 litre", category: "Household", image: "images/harpic.png", emoji: "🧴", rating: 4.6, discount: 25, options: generateBalancedOptions(99, 12, 1) },
+      { id: 39, name: "Lizol Floor Cleaner", quantity: "1 litre", category: "Household", image: "images/lizol.png", emoji: "🧹", rating: 4.7, discount: 28, options: generateBalancedOptions(128, 12, 2) },
+      { id: 40, name: "Surf Excel Matic Powder", quantity: "2 kg", category: "Household", image: "images/surf-excel-powder.png", emoji: "🧺", rating: 4.7, discount: 25, options: generateBalancedOptions(275, 12, 3) }
+    ];
+
+    let activeCategory = "All";
+    let searchTerm = "";
+    let sortMode = "recommended";
+    let isSosMode = false;
+    let cart = [];
+
+    const productGrid = document.getElementById("productGrid");
+    const emptyState = document.getElementById("emptyState");
+    const cartDrawer = document.getElementById("cartDrawer");
+    const drawerBackdrop = document.getElementById("drawerBackdrop");
+    const toast = document.getElementById("toast");
+
+    const money = value => `₹${value.toLocaleString("en-IN")}`;
+
+    function orderedOptions(product) { return [...product.options].sort((a, b) => a.price - b.price); }
+    function bestOption(product) { 
+      if (isSosMode) return [...product.options].sort((a, b) => a.time - b.time)[0];
+      return orderedOptions(product)[0]; 
+    }
+    function fastestOption(product) { return [...product.options].sort((a, b) => a.time - b.time)[0]; }
+
+    function getVisibleProducts() {
+      let list = products.filter(product => {
+        if (!isSosMode && product.category === "Emergency") return false;
+        const matchesCategory = activeCategory === "All" || product.category === activeCategory;
+        const matchesSearch = `${product.name} ${product.category}`.toLowerCase().includes(searchTerm.toLowerCase());
+        return matchesCategory && matchesSearch;
+      });
+
+      if (sortMode === "price" && !isSosMode) list.sort((a, b) => bestOption(a).price - bestOption(b).price);
+      if (sortMode === "delivery" || isSosMode) list.sort((a, b) => fastestOption(a).time - fastestOption(b).time);
+      if (sortMode === "discount" && !isSosMode) list.sort((a, b) => b.discount - a.discount);
+      return list;
+    }
+
+    function renderProducts() {
+      const visible = getVisibleProducts();
+
+      productGrid.innerHTML = visible.map(product => {
+        const cheapestOrFastest = bestOption(product);
+        const actionText = isSosMode ? `Add Fastest · ${cheapestOrFastest.time}m` : `Add cheapest · ${money(cheapestOrFastest.price)}`;
+
+        return `
+          <article class="product-card">
+            <div class="product-image">
+              ${!isSosMode && product.discount > 0 ? `<span class="deal-label">${product.discount}% OFF</span>` : ''}
+              <img class="product-photo" src="${product.image}" alt="${product.name}" onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('span'), { className: 'product-emoji', textContent: '${product.emoji}' }));" />
+            </div>
+            <div class="product-info">
+              <h3>${product.name}</h3>
+              <div class="product-meta">${product.quantity} · <span class="rating">★ ${product.rating}</span></div>
+              <div class="compare-list">
+                ${[...product.options].sort((a,b) => isSosMode ? a.time - b.time : a.price - b.price).map(option => `
+                  <div class="compare-row">
+                    <span class="store-logo">
+                      <img class="${option.store.toLowerCase()}" src="${storeLogos[option.store] || ''}" alt="${option.store}" onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('span'), { className: 'store ' + '${option.store.toLowerCase()}', textContent: '${option.store}' }));" />
+                    </span>
+                    <span class="delivery" style="${isSosMode && option.time === cheapestOrFastest.time ? 'color:var(--red);font-weight:bold;' : ''}">${option.time} min</span>
+                    <span class="price ${option.price === cheapestOrFastest.price && !isSosMode ? "best-price" : ""}">${money(option.price)}</span>
+                  </div>
+                `).join("")}
+              </div>
+              <button class="add-button" onclick="addToCart(${product.id}, this)">${actionText}</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      emptyState.style.display = visible.length ? "none" : "block";
+      document.getElementById("resultText").textContent = visible.length ? `${visible.length} products available near you` : "No products found";
+    }
+
+    function addToCart(productId, buttonEl) {
+      const product = products.find(item => item.id === productId);
+      const option = bestOption(product);
+      const existing = cart.find(item => item.product.id === productId && item.option.store === option.store);
+
+      if (existing) existing.quantity += 1;
+      else cart.push({ product, option, quantity: 1, addedInSos: isSosMode });
+
+      updateCart();
+      showToast(`🛒 Added ${product.name}`);
+
+      const cartCountEl = document.getElementById("cartCount");
+      cartCountEl.style.animation = "none"; void cartCountEl.offsetWidth; cartCountEl.style.animation = "cartBounce 0.5s ease";
+    }
+
+    function adjustFlatmates(delta) {
+      flatmateCount = Math.max(2, Math.min(10, flatmateCount + delta));
+      document.getElementById("flatmateCountText").textContent = flatmateCount;
+      updateCart();
+    }
+
+    function updateHostelSplitUI(total) {
+      const splitBox = document.getElementById("hostelSplitBox");
+      if (!cart.length) { splitBox.style.display = "none"; return; }
+      splitBox.style.display = "block";
+      const perPerson = Math.ceil(total / flatmateCount);
+      document.getElementById("splitSummaryText").textContent = `₹${perPerson} / person`;
+
+      let itemsList = cart.map(i => `• ${i.product.name} (x${i.quantity})`).join("%0A");
+      let message = `🛒 *Room Grocery Bill*%0A------------------------%0A${itemsList}%0A------------------------%0A*Total:* ₹${total}%0A*Split (${flatmateCount} people):* ₹${perPerson} each!%0A%0APlease UPI your share! 🙌`;
+      document.getElementById("whatsappShareBtn").href = `https://wa.me/?text=${message}`;
+    }
+
+    // 🤖 COMPACT AI CART OPTIMIZER
+    function runAIEngine(mixedTotal, uniqueStores) {
+      const content = document.getElementById("aiOptimizerContent");
+      const statusTag = document.getElementById("aiStatusTag");
+
+      if (!cart.length) {
+        statusTag.textContent = "Standby";
+        content.innerHTML = `<p style="font-size:12px; opacity:0.8; line-height:1.4; margin-top:4px;">Add items to your cart to see live price calculations across all apps.</p>`;
+        return;
+      }
+
+      const platforms = ["Zepto", "Blinkit", "Instamart", "Flipkart"];
+      const storeTotals = {};
+
+      platforms.forEach(store => {
+        let subtotal = 0;
+        cart.forEach(item => {
+          const opt = item.product.options.find(o => o.store === store);
+          subtotal += (opt ? opt.price : item.option.price) * item.quantity;
+        });
+        storeTotals[store] = subtotal + flatDeliveryFee;
+      });
+
+      let bestStore = platforms[0];
+      platforms.forEach(store => {
+        if (storeTotals[store] < storeTotals[bestStore]) bestStore = store;
+      });
+
+      const bestSingleTotal = storeTotals[bestStore];
+
+      let cardsHtml = platforms.map(store => {
+        const isWinner = (store === bestStore);
+        return `
+          <div class="ai-platform-card ${isWinner ? 'winner' : ''}">
+            <div class="ai-platform-name">
+              <span>${store}</span>
+              ${isWinner ? '<span>★ BEST</span>' : ''}
+            </div>
+            <div class="ai-platform-price">₹${storeTotals[store]}</div>
+          </div>
+        `;
+      }).join("");
+
+      if (uniqueStores.size > 1 && bestSingleTotal < mixedTotal) {
+        const savings = mixedTotal - bestSingleTotal;
+        statusTag.textContent = `Save ₹${savings}`;
+        content.innerHTML = `
+          <div class="ai-platform-grid">${cardsHtml}</div>
+          <div class="ai-verdict-box">
+            💡 <strong>Verdict:</strong> Buying on <b>${bestStore}</b> saves you <b>₹${savings}</b> in delivery fees!
+          </div>
+          <button class="ai-action-btn" onclick="applyAiGlobalSwap('${bestStore}')">
+            Switch to ${bestStore} (Save ₹${savings})
+          </button>
+        `;
+      } else if (uniqueStores.size > 1 && bestSingleTotal >= mixedTotal) {
+        statusTag.textContent = "Split Wins!";
+        content.innerHTML = `
+          <div class="ai-platform-grid">${cardsHtml}</div>
+          <div class="ai-verdict-box">
+            ✨ <strong>Verdict:</strong> Splitting across ${uniqueStores.size} stores is cheaper than any single app! Keep your split.
+          </div>
+        `;
+      } else {
+        statusTag.textContent = "Optimized";
+        content.innerHTML = `
+          <div class="ai-platform-grid">${cardsHtml}</div>
+          <div class="ai-verdict-box">
+            ✨ Cart is optimized on <b>${[...uniqueStores][0]}</b>. No extra delivery charges applied!
+          </div>
+        `;
+      }
+    }
+
+    window.applyAiGlobalSwap = function(targetStore) {
+      cart.forEach((item, index) => {
+        const newOption = item.product.options.find(opt => opt.store === targetStore);
+        if (newOption) cart[index].option = newOption;
+      });
+      updateCart();
+      showToast(`✨ Switched all items to ${targetStore}!`);
+    };
+
+    function updateCart() {
+      let mixedSubtotal = 0;
+      const uniqueStores = new Set();
+      
+      cart.forEach(item => {
+        mixedSubtotal += item.option.price * item.quantity;
+        uniqueStores.add(item.option.store);
+      });
+      
+      const mixedFees = cart.length ? (uniqueStores.size * flatDeliveryFee) : 0;
+      const mixedTotal = mixedSubtotal + mixedFees;
+
+      runAIEngine(mixedTotal, uniqueStores);
+      updateHostelSplitUI(mixedTotal);
+
+      document.getElementById("cartCount").textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+      document.getElementById("subtotal").textContent = money(mixedSubtotal);
+      document.getElementById("fees").textContent = money(mixedFees);
+      document.getElementById("total").textContent = money(mixedTotal);
+      
+      document.getElementById("cartItems").innerHTML = cart.length
+        ? cart.map((item, index) => `
+          <div class="cart-item">
+            <div class="cart-item-img">
+              <img src="${item.product.image}" alt="${item.product.name}" onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('span'), { textContent: '${item.product.emoji}', style: 'font-size: 20px;' }));" />
+            </div>
+            <div class="cart-item-info">
+              <strong>${item.product.name}</strong>
+              <small>${item.quantity} × ${money(item.option.price)} · ${item.option.store}</small>
+            </div>
+            <button class="cart-del-btn" onclick="removeFromCart(${index})">×</button>
+          </div>
+        `).join("")
+        : `<p style="color: var(--muted); text-align: center; padding: 30px 0; font-size:13px;">Your cart is empty.<br><br>Add products to calculate savings!</p>`;
+    }
+
+    document.getElementById("sosToggle").addEventListener("click", function() {
+      isSosMode = !isSosMode;
+      if (isSosMode) {
+        document.body.classList.add("sos-active");
+        this.classList.add("active");
+        this.innerHTML = "🚨 EXIT SOS";
+        document.getElementById("heroTitle").innerHTML = "Emergency Mode<br/>Activated.";
+        document.getElementById("heroDesc").textContent = "Prices ignored. Sorting strictly by fastest delivery for critical supplies.";
+        document.getElementById("sortSelect").value = "delivery";
+        document.getElementById("sortSelect").disabled = true;
+        document.querySelectorAll(".category").forEach(item => item.classList.remove("active"));
+        const emerTab = document.querySelector('[data-category="Emergency"]');
+        if(emerTab) emerTab.classList.add("active");
+        activeCategory = "Emergency";
+        showToast("🚨 SOS Mode: Saving minutes, saving lives.");
+      } else {
+        document.body.classList.remove("sos-active");
+        this.classList.remove("active");
+        this.innerHTML = '<span style="font-size:16px">🚨</span> SOS';
+        document.getElementById("heroTitle").innerHTML = "Spend less.<br />Choose smarter.";
+        document.getElementById("heroDesc").textContent = "Compare live-style prices, delivery times and offers across your favourite shopping apps before you place an order.";
+        document.getElementById("sortSelect").disabled = false;
+        document.getElementById("sortSelect").value = "recommended";
+        sortMode = "recommended";
+        document.querySelectorAll(".category").forEach(item => item.classList.remove("active"));
+        const allTab = document.querySelector('[data-category="All"]');
+        if(allTab) allTab.classList.add("active");
+        activeCategory = "All";
+      }
+      renderProducts();
+    });
+
+    function removeFromCart(index) { cart.splice(index, 1); updateCart(); }
+    function openCart() { cartDrawer.classList.add("open"); drawerBackdrop.classList.add("open"); document.body.style.overflow = "hidden"; }
+    function closeCart() { cartDrawer.classList.remove("open"); drawerBackdrop.classList.remove("open"); document.body.style.overflow = "auto"; }
+    
+    let toastTimeout;
+    function showToast(message) {
+      clearTimeout(toastTimeout);
+      toast.textContent = message; toast.classList.add("show");
+      toastTimeout = setTimeout(() => toast.classList.remove("show"), 3000);
+    }
+
+    document.querySelectorAll(".category").forEach(button => {
+      button.addEventListener("click", () => {
+        if (isSosMode && button.dataset.category !== "Emergency" && button.dataset.category !== "Pharmacy") {
+          showToast("Exit SOS mode to view groceries."); return;
+        }
+        document.querySelectorAll(".category").forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+        activeCategory = button.dataset.category;
+        renderProducts();
+      });
+    });
+
+    document.getElementById("searchInput").addEventListener("input", event => { searchTerm = event.target.value.trim(); renderProducts(); });
+    document.getElementById("searchButton").addEventListener("click", () => { searchTerm = document.getElementById("searchInput").value.trim(); renderProducts(); });
+    document.getElementById("sortSelect").addEventListener("change", event => { sortMode = event.target.value; renderProducts(); });
+    document.getElementById("cartButton").addEventListener("click", openCart);
+    document.getElementById("closeCart").addEventListener("click", closeCart);
+    document.getElementById("closeCheckoutModal").addEventListener("click", () => { document.getElementById("checkoutModal").classList.remove("show"); });
+    drawerBackdrop.addEventListener("click", closeCart);
+
+    document.getElementById("locationButton").addEventListener("click", () => {
+      const location = prompt("Enter city or pincode:", "Bengaluru, 560001");
+      if (location && location.trim()) {
+        document.getElementById("locationText").textContent = location.trim();
+        renderProducts(); showToast(`Location updated to ${location.trim()}`);
+      }
+    });
+
+    document.getElementById("checkoutButton").addEventListener("click", () => {
+      if (!cart.length) { showToast("Add a product first"); return; }
+      
+      const queriesByStore = {};
+      cart.forEach(item => {
+        const store = item.option.store;
+        if (!queriesByStore[store]) queriesByStore[store] = [];
+        queriesByStore[store].push(item.product.name);
+      });
+
+      const uniqueStores = Object.keys(queriesByStore);
+
+      if (uniqueStores.length === 1) {
+        openStoreTabs(uniqueStores[0], queriesByStore[uniqueStores[0]].join("||"));
+      } else {
+        const buttonsHtml = uniqueStores.map(store => `
+          <button class="store-checkout-btn" onclick="openStoreTabs('${store}', '${queriesByStore[store].join("||")}')">
+            <span class="store-checkout-meta">
+              <img src="${storeLogos[store]}" alt="${store}" onerror="this.style.display='none'">
+              Open ${store} 
+              <span class="store-checkout-badge">${queriesByStore[store].length} items</span>
+            </span>
+            <span style="color:var(--muted); font-size:18px;">→</span>
+          </button>
+        `).join("");
+        
+        document.getElementById("checkoutModalButtons").innerHTML = buttonsHtml;
+        document.getElementById("checkoutModal").classList.add("show");
+      }
+    });
+
+    window.openStoreTabs = function(store, queriesStr) {
+      const queries = queriesStr.split("||");
+      let delay = 0;
+      queries.forEach(query => {
+        const url = storeSearchUrl(store, [query]);
+        if (url) {
+          setTimeout(() => { window.open(url, "_blank"); }, delay);
+          delay += 600; 
+        }
+      });
+      showToast(`Opening ${store}...`);
+      document.getElementById("checkoutModal").classList.remove("show"); 
+    };
+
+    function copyCartLink() {
+      const cartEncoded = cart.map(i => `${i.product.id}:${i.quantity}`).join(",");
+      const shareUrl = `${window.location.origin}${window.location.pathname}?cart=${cartEncoded}&flatmates=${flatmateCount}`;
+      navigator.clipboard.writeText(shareUrl).then(() => showToast("🔗 Cart link copied!"));
+    }
+
+    const voiceBtn = document.getElementById("voiceButton");
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false; recognition.interimResults = false; recognition.lang = 'en-IN';
+
+      recognition.onstart = () => { voiceBtn.classList.add("listening"); document.getElementById("searchInput").placeholder = "Listening..."; };
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById("searchInput").value = transcript;
+        searchTerm = transcript; renderProducts(); showToast(`Searched for "${transcript}"`);
+      };
+      recognition.onerror = () => { showToast("Voice recognition unavailable"); };
+      recognition.onend = () => {
+        voiceBtn.classList.remove("listening"); document.getElementById("searchInput").placeholder = "Search chai, atta, crocin, snacks...";
+      };
+      voiceBtn.addEventListener("click", () => { recognition.start(); });
+    } else { voiceBtn.style.display = "none"; }
+
+    renderProducts(); updateCart();
+  </script>
+</body>
+</html>
